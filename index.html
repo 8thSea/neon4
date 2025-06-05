@@ -124,3 +124,35 @@
             }
         }
         ...
+
+        // Update star positions to give the illusion of moving forward
+function updateStars() {
+    for (const s of stars) {
+        s.z -= s.speed;
+        if (s.z <= 0) {
+            resetStar(s);
+            s.z = baseWidth;
+        }
+    }
+}
+
+// Draw everything on canvas
+function draw(){
+    // background with moving starfield
+    ctx.fillStyle='#000';
+    ctx.fillRect(0,0,baseWidth,baseHeight);
+    ctx.fillStyle='#fff';
+    for(const s of stars){
+        const k = baseWidth / s.z;
+        const px = s.x * k + baseWidth / 2;
+        const py = s.y * k + baseHeight / 2;
+        const size = (1 - s.z / baseWidth) * 3;
+        ctx.globalAlpha = 0.5 + (1 - s.z / baseWidth) * 0.5;
+        ctx.beginPath();
+        ctx.arc(px, py, size, 0, Math.PI * 2);
+        ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    ...
+}
+
