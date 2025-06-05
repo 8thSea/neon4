@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Pong</title>
+    <style>
+        /* Basic page setup */
+        body {
+            background:#000;
+            margin:0;
+            height:100vh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:#0f0;
+            font-family: "Courier New", monospace;
+        }
+        /* Canvas wrapper for centering */
+        #gameContainer {
+            position:relative;
+            width:100%;
+            max-width:800px;
+        }
+        canvas {
+            width:100%;
+            height:auto;
+            display:block;
+            background:#000;
+            box-shadow:0 0 20px rgba(0,255,255,0.2) inset;
+        }
+        /* Scoreboard styling */
+        #score {
+            position:absolute;
+            top:10px;
+            left:50%;
+            transform:translateX(-50%);
+            font-size:32px;
+            text-shadow:0 0 10px #0f0;
+        }
+        /* Instruction message */
+        #message {
+            position:absolute;
+            bottom:10px;
+            left:50%;
+            transform:translateX(-50%);
+            font-size:18px;
+            color:#0ff;
+            text-shadow:0 0 10px #0ff;
+        }
+    </style>
+</head>
+<body>
+    <!-- Container holding scoreboard, canvas, and message -->
+    <div id="gameContainer">
+        <div id="score">0 : 0</div>
+        <canvas id="gameCanvas"></canvas>
+        <div id="message">Press SPACE to Play</div>
+    </div>
+    <script>
+        // Canvas setup and responsiveness
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreEl = document.getElementById('score');
+        const msgEl = document.getElementById('message');
+
+        const baseWidth = 800;
+        const baseHeight = 600;
+
+        function resize() {
+            const ratio = baseWidth / baseHeight;
+            let w = window.innerWidth;
+            let h = window.innerHeight;
+            if (w/h > ratio) {
+                w = h * ratio;
+            } else {
+                h = w / ratio;
+            }
+            canvas.width = baseWidth;
+            canvas.height = baseHeight;
+            canvas.style.width = w + 'px';
+            canvas.style.height = h + 'px';
+        }
+        window.addEventListener('resize', resize);
+        resize();
+        initStars();
+        requestAnimationFrame(loop);
+
+        // Game objects
+        const paddleWidth = 15;
+        const paddleHeight = 100;
+        const ballRadius = 10;
+
+        const leftPaddle = { x: 20, y: baseHeight/2 - paddleHeight/2, dy:0 };
+        const rightPaddle = { x: baseWidth - 20 - paddleWidth, y: baseHeight/2 - paddleHeight/2, dy:0 };
+        const ball = { x: baseWidth/2, y: baseHeight/2, dx:0, dy:0 };
+
+        let leftScore = 0;
+        let rightScore = 0;
+        let playing = false;
+
+        // Particle trail behind ball
+        const trail = [];
+        const maxTrail = 20;
+
+        // Starfield background using simple 3D projection to simulate
+        // moving forward through space
+        const numStars = 200;
+        const stars = [];
+
+        function resetStar(s) {
+            // start at a random position away from the center
+            s.x = (Math.random() - 0.5) * baseWidth;
+            s.y = (Math.random() - 0.5) * baseHeight;
+            s.z = Math.random() * baseWidth;
+            s.speed = 2 + Math.random() * 2; // faster speeds for depth
+        }
+
+        function initStars() {
+            for (let i = 0; i < numStars; i++) {
+                const s = {};
+                resetStar(s);
+                stars.push(s);
+            }
+        }
+        ...
